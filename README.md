@@ -1,12 +1,9 @@
-# Endec
-Rust build-dependency for encoding and decoding file formats.  Experimental
-alternative to serde focusing on faster link times (similar to `bindgen`).
+# MuON Parser
+Rust build-dependency to generate code for encoding and decoding from MuON.
+Intended to be a good reference implementation for porting to other programming
+languages.
 
 ## 1. Pick A Schema Format
-The first thing you need to do is pick a schema format.  You can also choose not
-to pick a schema (in which case the file is read into an `Any` type).  We'll use
-a [MuON](https://github.com/muon-data/muon) schema.
-
 Make a file called "schemas/MyNotes.muon"
 
 ```muon
@@ -27,13 +24,13 @@ byte: int >=0 <256
 In your `build.rs` script:
 ```rust
 fn main() {
-    endec::file("schemas/MyNotes.muon");
+    muon_parser::file("./schemas/MyNotes.muon");
 }
 ```
 
 In `src/endec.rs`:
 ```rust
-include!(concat!(env!("OUT_DIR"), "/endec.rs"));
+include!(concat!(env!("OUT_DIR"), "/schemas/MyNotes.rs"));
 ```
 
 Now the macro will expand to:
@@ -123,9 +120,9 @@ byte: 42
 Then in `main.rs`,
 
 ```
-mod endec;
+mod muon_parser;
 
-use endec::MyNotes;
+use muon_parser::MyNotes;
 
 const MY_NOTES: MyNotes = MyNotes::parse(include!("src/example.muon"));
 
